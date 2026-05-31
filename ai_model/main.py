@@ -1,16 +1,5 @@
 # ─────────────────────────────────────────────────────────────
-# ai_model/main.py  —  Trashify AI (Fixed Loader v4)
-#
-# Fix: file model.weights.h5 menyimpan layer dengan nama GENERIC
-# Keras 3 (batch_normalization_N, conv2d_N, ...) sementara model
-# MobileNetV2 API menggunakan nama SPESIFIK (Conv1, bn_Conv1, ...).
-#
-# Solusi: decode urutan instantiasi layer dari config.json untuk
-# membangun mapping specific_name → generic_name, lalu assign
-# weights satu per satu berdasarkan mapping tersebut.
-#
-# Output kelas : [organic, anorganic, residu]
-# Input size   : 224x224x3, normalisasi [-1, 1]
+# ai_model/main.py  —  Trashify AI (Railway-Ready v5)
 # ─────────────────────────────────────────────────────────────
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -20,14 +9,14 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import numpy as np
 from PIL import Image
-import h5py, json, io, os
+import h5py, json, io, os, uvicorn
 
-app = FastAPI(title="Trashify AI Model", version="4.0.0")
+app = FastAPI(title="Trashify AI Model", version="5.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
                    allow_methods=["*"], allow_headers=["*"])
 
 CLASS_LABELS = ["anorganic", "organic", "residu"]
-ITEM_NAMES = {
+ITEM_NAMES   = {
     "anorganic": "Sampah Anorganik",
     "organic":   "Sampah Organik",
     "residu":    "Sampah Residu",
@@ -43,12 +32,16 @@ def build_model():
     out = layers.Dense(3, activation="softmax")(x)
     return keras.Model(inputs=base.input, outputs=out)
 
-# ── Decode mapping: nama spesifik → nama generik Keras 3 ─────
+# ── Decode mapping nama layer ─────────────────────────────────
 def build_name_mapping(config_path):
     with open(config_path) as f:
         cfg = json.load(f)
-    cls_snake = {"Conv2D": "conv2d", "DepthwiseConv2D": "depthwise_conv2d",
-                 "BatchNormalization": "batch_normalization", "Dense": "dense"}
+    cls_snake = {
+        "Conv2D":              "conv2d",
+        "DepthwiseConv2D":     "depthwise_conv2d",
+        "BatchNormalization":  "batch_normalization",
+        "Dense":               "dense"
+    }
     counters, mapping = {}, {}
     for layer in cfg["config"]["layers"]:
         cls  = layer["class_name"]
@@ -62,9 +55,8 @@ def build_name_mapping(config_path):
         mapping[name] = generic
     return mapping
 
-# ── Load weights berdasarkan mapping ─────────────────────────
+# ── Load weights ──────────────────────────────────────────────
 def load_weights_by_mapping(model, weights_path, config_path):
-    # Baca semua layer dari h5
     h5_data = {}
     with h5py.File(weights_path, "r") as f:
         for k in f.keys():
@@ -73,12 +65,12 @@ def load_weights_by_mapping(model, weights_path, config_path):
             grp = f[k]
             if "vars" not in grp or len(grp["vars"].keys()) == 0:
                 continue
-            # Strip "layers\" prefix (satu backslash)
-            name = k[len("layers\\"):]
+            # Deteksi separator otomatis (\ di Windows, bisa beda di Linux)
+            sep  = k[6]   # karakter tepat setelah "layers"
+            name = k[len("layers" + sep):]
             vg   = grp["vars"]
             h5_data[name] = [vg[str(i)][()] for i in range(len(vg.keys()))]
 
-    # Bangun mapping nama
     name_map = build_name_mapping(config_path)
 
     assigned = not_found = shape_err = 0
@@ -86,12 +78,10 @@ def load_weights_by_mapping(model, weights_path, config_path):
         if not layer.weights:
             continue
         sname = layer.name
-
-        # Cari generic name
         if sname in name_map:
             gname = name_map[sname]
         elif "dense" in sname.lower():
-            gname = "dense"   # head classifier yang kita tambah sendiri
+            gname = "dense"
         else:
             not_found += 1
             continue
@@ -111,7 +101,7 @@ def load_weights_by_mapping(model, weights_path, config_path):
     return assigned, not_found, shape_err
 
 # ── Startup ───────────────────────────────────────────────────
-model = None
+model        = None
 config_path  = "config.json"
 weights_path = "model.weights.h5"
 
@@ -128,14 +118,11 @@ if os.path.exists(weights_path) and os.path.exists(config_path):
         assigned, not_found, shape_err = load_weights_by_mapping(
             model, weights_path, config_path)
         print(f"   ✅ {assigned}/105 layer weights dimuat")
-        if not_found:
-            print(f"   ⚠️  {not_found} layer tidak ditemukan")
-        if shape_err:
-            print(f"   ⚠️  {shape_err} shape mismatch")
+        if not_found:  print(f"   ⚠️  {not_found} layer tidak ditemukan")
+        if shape_err:  print(f"   ⚠️  {shape_err} shape mismatch")
 
-        # Verifikasi cepat
         std = np.std(model.get_layer("Conv1").get_weights()[0])
-        print(f"   ✅ Conv1 std={std:.4f} — weights valid (bukan random init)")
+        print(f"   ✅ Conv1 std={std:.4f} — weights valid")
         print("\n🚀 Model siap!")
 
     except Exception as e:
@@ -149,8 +136,16 @@ else:
 # ── Health check ─────────────────────────────────────────────
 @app.get("/")
 def root():
-    return {"status": "ok", "model_loaded": model is not None,
-            "classes": CLASS_LABELS, "version": "4.0.0"}
+    return {
+        "status":       "ok",
+        "model_loaded": model is not None,
+        "classes":      CLASS_LABELS,
+        "version":      "5.0.0"
+    }
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "model_loaded": model is not None}
 
 # ── Predict ───────────────────────────────────────────────────
 @app.post("/predict")
@@ -164,24 +159,29 @@ async def predict(file: UploadFile = File(...)):
         img = Image.open(io.BytesIO(await file.read()))
         if img.mode != "RGB":
             img = img.convert("RGB")
-        img       = img.resize((224, 224))
-        arr       = np.array(img, dtype=np.float32) / 127.5 - 1.0
-        arr       = np.expand_dims(arr, 0)
+        img = img.resize((224, 224))
+        arr = np.array(img, dtype=np.float32) / 127.5 - 1.0
+        arr = np.expand_dims(arr, 0)
 
-        pred      = model.predict(arr, verbose=0)[0]
-        idx       = int(np.argmax(pred))
-        category  = CLASS_LABELS[idx]
-        confidence= float(pred[idx]) * 100
+        pred       = model.predict(arr, verbose=0)[0]
+        idx        = int(np.argmax(pred))
+        category   = CLASS_LABELS[idx]
+        confidence = float(pred[idx]) * 100
 
-        print(f"\n📊 Prediksi:")
-        for i, lbl in enumerate(CLASS_LABELS):
-            print(f"   {lbl:<12}: {pred[i]*100:5.1f}% {'█'*int(pred[i]*20)}")
-        print(f"   → {category} ({confidence:.1f}%)")
+        print(f"📊 {category} ({confidence:.1f}%)")
 
-        return {"success": True, "category": category,
-                "confidence": round(confidence, 1),
-                "item_name": ITEM_NAMES[category]}
+        return {
+            "success":    True,
+            "category":   category,
+            "confidence": round(confidence, 1),
+            "item_name":  ITEM_NAMES[category]
+        }
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(500, f"Gagal memproses: {e}")
+
+# ── Entry point untuk Railway ─────────────────────────────────
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
