@@ -45,7 +45,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     return res.status(200).json({
       success:    true,
       category,               // "organic" | "anorganic" | "residu"
-      confidence: Math.round(confidence * 100), // ubah 0.92 → 92
+      confidence: Math.round(confidence), // ubah 0.92 → 92
       itemName:   item_name,  // "Botol Plastik"
     });
 
