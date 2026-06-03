@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { MOCK_RESULTS, CATEGORY_LABELS } from "./constants";
 import { checkApiHealth, classifyWaste, fetchHistory, saveHistory, deleteAllHistory } from "./services/api";
+import styles from "./styles";
 
 import  Navbar       from "./components/Navbar";
 import  HeroSection  from "./components/HeroSection";
@@ -202,6 +203,7 @@ if (data.confidence < 85) {
 
   return (
     <>
+      <style>{styles}</style>
       <Navbar apiStatus={apiStatus} activePage={activePage} navigate={navigate} />
 
       <main>

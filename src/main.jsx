@@ -10,9 +10,9 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    registrations.forEach((registration) => {
-      registration.unregister();
-    });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(reg => console.log("SW OK:", reg.scope))
+      .catch(err => console.log("SW Error:", err));
   });
 }
