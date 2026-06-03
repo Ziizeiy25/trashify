@@ -1,49 +1,60 @@
-import { CATEGORY_LABELS, CATEGORY_ICONS } from "../constants";
- 
+const COLOR = { organic: "#3B6D11", anorganic: "#185FA5", residu: "#854F0B" };
+const BG    = { organic: "#EAF3DE", anorganic: "#E6F1FB", residu: "#FAEEDA" };
+const LABEL = { organic: "Organik", anorganic: "Anorganik", residu: "Residu" };
+const ICON  = { organic: "🌿",      anorganic: "♻️",        residu: "⚠️"    };
+
 export function History({ history, historyLoading, onClear }) {
-  return (
-    <section id="riwayat" className="t-section t-history-section">
-      <div className="t-history-header">
-        <div>
-          <div className="t-section-label">Riwayat</div>
-          <h2 className="t-section-title">Riwayat Deteksi</h2>
-        </div>
-        <button className="t-history-clear-btn" onClick={onClear}>
-          Hapus Semua
-        </button>
+  if (historyLoading) return (
+    <div className="r-section-wrapper">
+      <div className="r-history-loading">
+        <div className="r-spinner" />
+        <p>Memuat riwayat...</p>
       </div>
- 
-      <div className="t-history-list">
-        {historyLoading ? (
-          <div className="t-history-loading">Memuat riwayat dari server...</div>
-        ) : history.length === 0 ? (
-          <div className="t-history-empty">
-            <span className="t-history-empty-icon">📋</span>
-            Belum ada riwayat deteksi.<br />Mulai scan sampahmu sekarang!
-          </div>
-        ) : (
-          history.map((entry, i) => (
-            <div key={i} className="t-history-item">
-              {entry.imgSrc ? (
-                <img className="t-history-thumb" src={entry.imgSrc} alt={entry.itemName} />
-              ) : (
-                <div className={`t-history-thumb-placeholder ${entry.category}`}>
-                  {CATEGORY_ICONS[entry.category]}
+    </div>
+  );
+
+  return (
+    <div className="r-section-wrapper">
+      <div className="r-section-head">
+        <div className="r-section-label">Riwayat</div>
+        <div className="r-history-topbar">
+          <h2 className="r-section-title" style={{ margin: 0 }}>Scan Terakhir</h2>
+          {history.length > 0 && (
+            <button className="r-btn-danger" onClick={onClear}>Hapus Semua</button>
+          )}
+        </div>
+      </div>
+
+      {history.length === 0 ? (
+        <div className="r-history-empty">
+          <div className="r-history-empty-icon">📋</div>
+          <p className="r-history-empty-title">Belum ada riwayat scan</p>
+          <p className="r-history-empty-sub">Hasil klasifikasi akan muncul di sini setelah kamu melakukan scan pertama.</p>
+        </div>
+      ) : (
+        <div className="r-history-list">
+          {history.map((item, i) => (
+            <div key={i} className="r-history-item">
+              {item.imgSrc && (
+                <img src={item.imgSrc} alt={item.itemName} className="r-history-img" />
+              )}
+              {!item.imgSrc && (
+                <div className="r-history-img-placeholder" style={{ background: BG[item.category] }}>
+                  <span style={{ fontSize: 24 }}>{ICON[item.category]}</span>
                 </div>
               )}
-              <div className="t-history-info">
-                <div className="t-history-name">{entry.itemName}</div>
-                <div className="t-history-meta">
-                  {entry.time} · Akurasi {entry.confidence}%
-                </div>
+              <div className="r-history-info">
+                <div className="r-history-name">{item.itemName || "Sampah"}</div>
+                <div className="r-history-time">{item.time}</div>
+                <div className="r-history-conf">Confidence: {item.confidence?.toFixed ? item.confidence.toFixed(1) : item.confidence}%</div>
               </div>
-              <span className={`t-history-badge ${entry.category}`}>
-                {CATEGORY_LABELS[entry.category]}
-              </span>
+              <div className="r-history-badge" style={{ background: BG[item.category], color: COLOR[item.category] }}>
+                {ICON[item.category]} {LABEL[item.category]}
+              </div>
             </div>
-          ))
-        )}
-      </div>
-    </section>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

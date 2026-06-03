@@ -1,69 +1,48 @@
-export function HowItWorks() {
-  const steps = [
-    ["1","Input Gambar",    "Pengguna mengunggah foto sampah atau mengambil langsung via kamera browser. Gambar dikompresi dan dikirim ke API backend."],
-    ["2","Preprocessing",   "Backend Python menerima gambar, melakukan resize ke 224×224px dan normalisasi piksel sebelum dimasukkan ke model CNN."],
-    ["3","Klasifikasi CNN", "Model MobileNetV2 dengan transfer learning memprediksi kategori sampah (organik, anorganik, residu) beserta confidence score."],
-    ["4","Hasil & Panduan", "Frontend menampilkan hasil klasifikasi secara instan beserta panduan pengelolaan sampah yang sesuai dengan kategorinya."],
-  ];
- 
+export default function HowItWorks() {
   return (
-    <section id="cara-kerja" className="t-section t-how-section">
-      <div className="t-section-label">Teknologi</div>
-      <h2 className="t-section-title">Bagaimana Trashify Bekerja?</h2>
-      <p className="t-section-desc" style={{ marginBottom: 48 }}>
-        Trashify mengintegrasikan tiga komponen utama: antarmuka web, model AI berbasis CNN,
-        dan analitik data — semuanya terhubung melalui RESTful API.
-      </p>
-      <div className="t-how-grid">
-        {/* Langkah-langkah */}
-        <div className="t-steps-list">
-          {steps.map(([n, name, desc]) => (
-            <div key={n} className="t-step-item">
-              <div className="t-step-circle">{n}</div>
+    <div className="r-section-wrapper">
+      <div className="r-section-head">
+        <div className="r-section-label">Cara Kerja</div>
+        <h2 className="r-section-title">Tiga Langkah Mudah</h2>
+        <p className="r-section-sub">Klasifikasi sampah yang akurat dalam hitungan detik, dari foto hingga panduan pengelolaan.</p>
+      </div>
+
+      <div className="r-steps">
+        {[
+          { num: "01", icon: "📸", title: "Ambil Foto", desc: "Foto sampah menggunakan kamera atau upload dari galeri perangkat kamu. Format JPG, PNG, WEBP (Maks. 5MB)." },
+          { num: "02", icon: "🤖", title: "Analisis AI",  desc: "Model CNN MobileNetV2 kami menganalisis gambar dan mengidentifikasi jenis sampah dalam hitungan detik." },
+          { num: "03", icon: "♻️", title: "Panduan Pengelolaan", desc: "Terima panduan langkah-by-langkah tentang cara membuang atau mendaur ulang sampah dengan benar." },
+        ].map(({ num, icon, title, desc }) => (
+          <div key={num} className="r-step">
+            <div className="r-step-num">{num}</div>
+            <div className="r-step-icon">{icon}</div>
+            <h3 className="r-step-title">{title}</h3>
+            <p className="r-step-desc">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="r-how-features">
+        <h3 className="r-how-feat-title">Teknologi di balik Trashify</h3>
+        <div className="r-how-feat-grid">
+          {[
+            { icon: "🧠", label: "Model CNN",       val: "MobileNetV2"         },
+            { icon: "🖼️", label: "Input Size",      val: "224 × 224 px"        },
+            { icon: "🎯", label: "Output Kelas",    val: "3 kategori"           },
+            { icon: "⚡", label: "Respons",         val: "< 3 detik"            },
+            { icon: "🔧", label: "Framework AI",    val: "TensorFlow / Keras"   },
+            { icon: "🚀", label: "API",             val: "FastAPI + Express.js" },
+          ].map(({ icon, label, val }) => (
+            <div key={label} className="r-feat-item">
+              <span className="r-feat-icon">{icon}</span>
               <div>
-                <div className="t-step-name">{name}</div>
-                <p className="t-step-desc">{desc}</p>
+                <div className="r-feat-label">{label}</div>
+                <div className="r-feat-val">{val}</div>
               </div>
             </div>
           ))}
         </div>
- 
-        {/* Kartu arsitektur */}
-        <div className="t-how-visual">
-          <div className="t-how-card span2">
-            <span className="t-how-card-icon">🌐</span>
-            <div className="t-how-card-title">Frontend — React + Vite</div>
-            <p className="t-how-card-desc">
-              Antarmuka web responsif dengan fitur upload gambar, kamera langsung,
-              tampilan hasil real-time, dan riwayat deteksi. Networking call via Axios ke backend.
-            </p>
-          </div>
-          <div className="t-how-card">
-            <span className="t-how-card-icon">🤖</span>
-            <div className="t-how-card-title">AI Engine</div>
-            <p className="t-how-card-desc">
-              Model CNN MobileNetV2 + transfer learning. Dilatih di Kaggle dengan dataset
-              TrashNet. Di-deploy sebagai REST API via FastAPI.
-            </p>
-          </div>
-          <div className="t-how-card">
-            <span className="t-how-card-icon">📊</span>
-            <div className="t-how-card-title">Data Analytics</div>
-            <p className="t-how-card-desc">
-              EDA dataset, analisis distribusi kelas, dan dashboard Streamlit untuk
-              memvisualisasikan tren klasifikasi pengguna.
-            </p>
-          </div>
-          <div className="t-how-card span2">
-            <span className="t-how-card-icon">⚡</span>
-            <div className="t-how-card-title">Backend — Express.js + FastAPI + MongoDB</div>
-            <p className="t-how-card-desc">
-              RESTful API yang menangani request gambar, meneruskan ke model AI, menyimpan
-              riwayat ke MongoDB, dan mengembalikan respons terstruktur ke frontend.
-            </p>
-          </div>
-        </div>
       </div>
-    </section>
+    </div>
   );
 }

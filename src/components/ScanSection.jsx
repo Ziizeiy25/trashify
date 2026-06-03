@@ -153,21 +153,44 @@ export default function ScanSection({
             )}
 
             {/* Error — klasifikasi gagal */}
-            {scanState === "error" && (
-              <>
-                <div className="t-result-idle-icon" style={{ background: "var(--residu-bg)" }}>
-                  <span style={{ fontSize: 32 }}>⚠️</span>
-                </div>
-                <div className="t-result-idle-title" style={{ color: "var(--residu)" }}>
-                  Klasifikasi Gagal
-                </div>
-                <p className="t-result-idle-desc">{scanError}</p>
-                <button className="t-btn-secondary" onClick={onClassify} style={{ fontSize: 13 }}>
-                  Coba Lagi
-                </button>
-              </>
-            )}
+{scanState === "error" && (
+  <>
+    <div className="t-result-idle-icon" style={{ background: "var(--residu-bg)" }}>
+      <span style={{ fontSize: 32 }}>⚠️</span>
+    </div>
+    <div className="t-result-idle-title" style={{ color: "var(--residu)" }}>
+      Klasifikasi Gagal
+    </div>
+    <p className="t-result-idle-desc">{scanError}</p>
+    <button className="t-btn-secondary" onClick={onClassify} style={{ fontSize: 13 }}>
+      Coba Lagi
+    </button>
+  </>
+)}
 
+{/* Unrecognized — bukan sampah / confidence rendah */}
+{scanState === "unrecognized" && (
+  <>
+    <div className="t-result-idle-icon" style={{ background: "#FFF8E6" }}>
+      <span style={{ fontSize: 32 }}>🤔</span>
+    </div>
+    <div className="t-result-idle-title" style={{ color: "var(--amber, #BA7517)" }}>
+      Bukan Sampah?
+    </div>
+    <p className="t-result-idle-desc">
+      Tingkat keyakinan hanya <strong>{result?.confidence?.toFixed(1)}%</strong> — 
+      di bawah batas minimum 85%. Pastikan gambar menampilkan 
+      sampah dengan jelas dan pencahayaan cukup.
+    </p>
+    <button 
+  className="t-btn-secondary" 
+  onClick={() => { onResetResult(); onReset(); }} 
+  style={{ fontSize: 13 }}
+>
+  Coba Gambar Lain
+</button>
+  </>
+)}
             {/* Result — berhasil */}
             {scanState === "result" && result && (
               <div style={{ width: "100%" }}>

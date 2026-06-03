@@ -1,48 +1,54 @@
-export function Categories() {
-  const cats = [
-    {
-      cls: "organic", icon: "🌿", name: "Organik",
-      desc: "Sampah yang berasal dari makhluk hidup dan dapat terurai secara alami. Paling ramah lingkungan dan bernilai tinggi untuk kompos.",
-      tags: ["Sisa makanan","Daun kering","Kulit buah","Ampas kopi","Kayu"],
-      treatment: "♻️ Bisa dikomposkan atau dijadikan pupuk",
-    },
-    {
-      cls: "anorganic", icon: "♻️", name: "Anorganik",
-      desc: "Sampah yang tidak dapat terurai secara alami namun bisa didaur ulang kembali menjadi produk yang berguna.",
-      tags: ["Botol plastik","Kertas","Kaleng","Kaca","Kardus"],
-      treatment: "🔄 Bisa didaur ulang di bank sampah",
-    },
-    {
-      cls: "residu", icon: "⚠️", name: "Residu",
-      desc: "Sampah yang tidak bisa dikomposkan maupun didaur ulang. Memerlukan penanganan khusus agar tidak mencemari lingkungan.",
-      tags: ["Popok","Styrofoam","Plastik berlapis","Pembalut","Puntung rokok"],
-      treatment: "🗑️ Buang ke TPA — tidak bisa diolah kembali",
-    },
-  ];
- 
+const CATS = [
+  {
+    id: "organic", icon: "🌿", label: "Organik", color: "organic",
+    desc: "Sampah yang berasal dari makhluk hidup dan dapat terurai secara alami oleh mikroorganisme.",
+    items: ["Sisa Makanan", "Daun Kering", "Kulit Buah", "Sayuran", "Kertas Daur Ulang"],
+    tip: "Dapat dijadikan kompos",
+    tipIcon: "♻️",
+  },
+  {
+    id: "anorganic", icon: "♻️", label: "Anorganik", color: "anorganic",
+    desc: "Sampah yang berasal dari bahan non-hayati dan umumnya dapat didaur ulang menjadi produk baru.",
+    items: ["Botol Plastik", "Kaleng", "Kertas Bebas", "Kaca", "Logam"],
+    tip: "Setor ke bank sampah",
+    tipIcon: "🏦",
+  },
+  {
+    id: "residu", icon: "⚠️", label: "Residu", color: "residu",
+    desc: "Sampah yang tidak dapat didaur ulang maupun dikompos dan memerlukan penanganan khusus.",
+    items: ["Styrofoam", "Popok Bekas", "Masker", "Plastik Berlapis", "Pembalut"],
+    tip: "Buang ke TPA khusus",
+    tipIcon: "🗑️",
+  },
+];
+
+export default function Categories() {
   return (
-    <section id="kategori" className="t-section t-categories-section">
-      <div style={{ textAlign: "center" }}>
-        <div className="t-section-label">Jenis Sampah</div>
-        <h2 className="t-section-title">3 Kategori yang Trashify Kenali</h2>
-        <p className="t-section-desc" style={{ margin: "0 auto" }}>
-          Setiap kategori sampah memiliki cara pengelolaan yang berbeda. Trashify membantu
-          kamu menentukan kategori yang tepat dalam hitungan detik.
-        </p>
+    <div className="r-section-wrapper">
+      <div className="r-section-head">
+        <div className="r-section-label">Kategori</div>
+        <h2 className="r-section-title">Jenis Sampah yang Didukung</h2>
+        <p className="r-section-sub">Sistem kami mengklasifikasikan sampah ke dalam tiga kategori utama berdasarkan cara pengelolaannya.</p>
       </div>
-      <div className="t-categories-grid">
-        {cats.map(({ cls, icon, name, desc, tags, treatment }) => (
-          <div key={cls} className={`t-category-card ${cls}`}>
-            <span className="t-category-icon">{icon}</span>
-            <div className="t-category-name">{name}</div>
-            <p className="t-category-desc">{desc}</p>
-            <div className="t-category-examples">
-              {tags.map((t) => <span key={t} className="t-example-tag">{t}</span>)}
+
+      <div className="r-cat-grid">
+        {CATS.map(({ id, icon, label, color, desc, items, tip, tipIcon }) => (
+          <div key={id} className={`r-cat-card r-cat-card--${color}`}>
+            <div className="r-cat-icon">{icon}</div>
+            <h3 className="r-cat-title">{label}</h3>
+            <p className="r-cat-desc">{desc}</p>
+            <div className="r-cat-items">
+              {items.map(item => (
+                <span key={item} className={`r-cat-tag r-cat-tag--${color}`}>{item}</span>
+              ))}
             </div>
-            <div className="t-category-treatment">{treatment}</div>
+            <div className={`r-cat-tip r-cat-tip--${color}`}>
+              <span>{tipIcon}</span>
+              <span>{tip}</span>
+            </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

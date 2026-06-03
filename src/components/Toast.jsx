@@ -1,7 +1,7 @@
-export function Toast({ message, visible, isError }) {
+export default function Toast({ message, visible, isError }) {
   return (
-    <div className={`t-toast${visible ? " show" : ""}${isError ? " error" : ""}`}>
-      <div className="t-toast-dot" />
+    <div className={`r-toast${visible ? " r-toast--show" : ""}${isError ? " r-toast--error" : ""}`}>
+      <div className="r-toast-dot" />
       <span>{message}</span>
     </div>
   );
