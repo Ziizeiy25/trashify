@@ -70,7 +70,7 @@ export default function Footer({ navigate, activePage }) {
 
       <div className="r-footer-bottom">
         <span>© 2026 Trashify. Hak cipta dilindungi.</span>
-        <span>Dibuat dengan oleh Tim Capstone</span>
+        <span>Dibuat dengan oleh Tim Capstone CC26-PSU346</span>
       </div>
     </footer>
   );

@@ -13,6 +13,7 @@ import  Footer       from "./components/Footer";
 import  Toast        from "./components/Toast";
 
 const PAGES = ["home", "scan", "cara-kerja", "kategori", "riwayat"];
+const allowedTypes = [ "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/bmp", "image/tiff", "image/heic", "image/heif", "image/svg+xml"];
 
 export default function App() {
   const [activePage,      setActivePage]      = useState("home");
@@ -103,7 +104,7 @@ export default function App() {
 
   const loadImageFile = (file) => {
     if (file.size > 5 * 1024 * 1024) { showToast("Ukuran file terlalu besar — maks 5MB", true); return; }
-    if (!file.type.startsWith("image/")) { showToast("Format tidak didukung — gunakan JPG, PNG, atau WEBP", true); return; }
+    if (!allowedTypes.includes(file.type)) { showToast("Format tidak didukung — gunakan JPG, PNG, WEBP, GIF, BMP, TIFF, atau HEIC", true); return; }
     setCurrentFile(file);
     const reader = new FileReader();
     reader.onload  = (e) => { setPreviewSrc(e.target.result); setMode("preview"); showToast("Gambar berhasil dimuat"); };
