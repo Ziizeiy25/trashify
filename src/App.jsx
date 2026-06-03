@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { MOCK_RESULTS, CATEGORY_LABELS } from "./constants";
 import { checkApiHealth, classifyWaste, fetchHistory, saveHistory, deleteAllHistory } from "./services/api";
-import styles from "./styles";
+import "./styles.css";
 
 import  Navbar       from "./components/Navbar";
 import  HeroSection  from "./components/HeroSection";
