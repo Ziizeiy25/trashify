@@ -1,4 +1,4 @@
-const CACHE = "trashify-v1";
+const CACHE = "trashify-v3";
 const ASSETS = ["/", "/index.html"];
 
 self.addEventListener("install", e => {
@@ -10,9 +10,14 @@ self.addEventListener("install", e => {
 
 self.addEventListener("activate", e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(k => k !== CACHE).map(k => {
+          console.log("Deleting cache:", k);
+          return caches.delete(k);
+        })
+      );
+    })
   );
 });
 
