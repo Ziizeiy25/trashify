@@ -29,7 +29,7 @@
 - [Cara Deploy](#-cara-deploy)
 - [Endpoint API](#-endpoint-api)
 - [Struktur Folder](#-struktur-folder)
-- [Tim](#-tim Capstone CC26-PSU346)
+- [Capstone CC26-PSU346](#-tim)
 
 ---
 
