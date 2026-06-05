@@ -295,14 +295,14 @@ trashify/
 
 **CC26-PSU346** — Capstone Project
 
-| Nama | Role |
-|---|---|
-| Rezy Putratama Hendri | Full Stack Developer |
-| Alghazi Rabbani | Full Stack Developer |
-| Hasna Rosyida Nur Adila | Data Scientist |
-| Lita Rahma Sadina | Data Scientist |
-| Nadia Maghdalena | AI Engineer |
-| Zalvia Inasya Zulna | AI Engineer |
+| ID | Nama | Role |
+|---|---|---|
+| CFCC308D6Y1450 | Rezy Putratama Hendri | Full Stack Developer |
+| CFCC308D6Y1976 | Alghazi Rabbani | Full Stack Developer |
+| CDCC002D6X1446 | Hasna Rosyida Nur Adila | Data Scientist |
+| CDCC002D6X1264 | Lita Rahma Sadina | Data Scientist |
+| CACC322D6X2366 | Nadia Maghdalena | AI Engineer |
+| CACC322D6X2371 | Zalvia Inasya Zulna | AI Engineer |
 ---
 
 <div align="center">
