@@ -296,11 +296,12 @@ trashify/
 **CC26-PSU346** — Capstone Project
 
 | Nama | Role |
-|---|---|
-| — | Machine Learning |
-| — | Backend & Database |
-| — | Frontend & UI/UX |
-
+| Rezy Putratama Hendri |Full Stack Developer|
+| Alghazi Rabbani | Full Stack Developer |
+| Hasna Rosyida Nur Adila | Data Scientist |
+| Lita Rahma Sadina | Data Scientist |
+| Nadia Maghdalena | AI Engineer |
+| Zalvia Inasya Zulna | AI Engineer |
 ---
 
 <div align="center">
