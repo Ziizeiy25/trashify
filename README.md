@@ -296,6 +296,7 @@ trashify/
 **CC26-PSU346** — Capstone Project
 
 | Nama | Role |
+|---|---|
 | Rezy Putratama Hendri | Full Stack Developer |
 | Alghazi Rabbani | Full Stack Developer |
 | Hasna Rosyida Nur Adila | Data Scientist |
